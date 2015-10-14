@@ -5,8 +5,8 @@ var expect = require('chai').expect,
     pairs = require('pairs'),
     levelQuery = require('level-queryengine'),
     jsonqueryEngine = require('../index'),
-    rimraf = require('rimraf'),
-    after = require('after');
+    after = require('after'),
+    memdown = require('memdown');
 
 function encode(key) {
   return bytewise.encode(key).toString('hex');
@@ -21,11 +21,11 @@ function log() {
 }
 
 describe('level-plan', function() {
-  var db, dbPath = path.join(__dirname, '..', 'data', 'test-db');
+  var db, dbPath, iteration = 0
 
   beforeEach(function(done) {
-    rimraf.sync(dbPath);
-    db = levelup(dbPath, { valueEncoding: 'json' }, done);
+    dbPath = (iteration++) + '.db'
+    db = levelup(dbPath, { valueEncoding: 'json', db: memdown }, done);
   });
 
   afterEach(function(done) {
